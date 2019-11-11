@@ -54,9 +54,9 @@ DROP TABLE IF EXISTS `DRIVER`;
 CREATE TABLE `DRIVER` (
   `SSN` varchar(15) NOT NULL,
   `Availability` char(5) NOT NULL,
-  `Licence_number` varchar(15) NOT NULL,  
+  `License_number` varchar(15) NOT NULL,  
   PRIMARY KEY (`SSN`),
-  UNIQUE KEY `Licence_number` (`Licence_number`),
+  UNIQUE KEY `License_number` (`License_number`),
   FOREIGN Key (`SSN`) REFERENCES `PERSON` (`SSN`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
