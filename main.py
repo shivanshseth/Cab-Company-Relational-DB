@@ -27,40 +27,55 @@ def employeeStatistics():
     print("Not implemented")
 
 
-def hireAnEmployee():
+def addPerson(record):
     try:
-        # Takes emplyee details as input
-        row = {}
-        print("Enter new employee's details: ")
-        name = (input("Name (Fname Minit Lname): ")).split(' ')
-        row["Fname"] = name[0]
-        row["Minit"] = name[1]
-        row["Lname"] = name[2]
-        row["Ssn"] = input("SSN: ")
-        row["Bdate"] = input("Birth Date (YYYY-MM-DD): ")
-        row["Address"] = input("Address: ")
-        row["Sex"] = input("Sex: ")
-        row["Salary"] = float(input("Salary: "))
-        row["Dno"] = int(input("Dno: "))
-
-        """
-        In addition to taking input, you are required to handle domain errors as well
-
-        For example: the SSN should be only 9 characters long
-        Sex should be only M or F
-
-        If you choose to take Super_SSN, you need to make sure the foreign key constraint is satisfied
-
-        HINT: Instead of handling all these errors yourself, you can make use of except clause to print the error returned to you by MySQL
-        """
-
-        query = "INSERT INTO EMPLOYEE(Fname, Minit, Lname, Ssn, Bdate, Address, Sex, Salary, Dno) VALUES('%s', '%c', '%s', '%s', '%s', '%s', '%c', %f, %d)" %(row["Fname"], row["Minit"], row["Lname"], row["Ssn"], row["Bdate"], row["Address"], row["Sex"], row["Salary"], row["Dno"])
-
+        query = "INSERT INTO PERSON(SSN, First_name, Last_name, Year, Month, Day, Contact) VALUES('%d', '%s', '%s', '%d', '%d', '%d', '%d')" 
+        record = tuple(record)
         print(query)
-        cur.execute(query)
+        cur.execute(query, record)
         con.commit()
 
         print("Inserted Into Database")
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database")
+        print (">>>>>>>>>>>>>", e)
+        
+    return
+
+def addDriver():
+    try:
+        record = []
+        print("Enter driver details:")
+        record[0] = int(input('SSN: '))
+        record[1:3] = input('Name: ').split(' ')
+        record[3:6] = list(map(int, input('DOB (in yyyy-mm-dd format): ').split('-')))
+        record[6] = int(input('Contact: '))
+        addPerson(record)
+        record[1:]=[]
+        record[1] = input('License Number: ')
+        record[2] = True;
+        query = "INSERT INTO DRIVER(SSN, Availability, License_number) VALUES('%d', '%b', '%s')" 
+        record = tuple(record)
+        print(query)
+        cur.execute(query, record)
+        con.commit()
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database")
+        print (">>>>>>>>>>>>>", e)
+        
+    return
+
+def removePerson():
+    try:
+        ssn = int(input('SSN:'))
+        query = "DELETE * FROM PERSON WHERE SSN = %s"  % (ssn)
+        print(query)
+        cur.execute(query)
+        con.commit()
 
     except Exception as e:
         con.rollback()
@@ -110,13 +125,27 @@ while(1):
             while(1):
                 tmp = sp.call('clear',shell=True)
                 print("1. Hire a new driver")
-                print("2. Add a new cab")
-                print("3. ")
-                print("4. Employee Statistics")
-                print("5. Logout")
+                print("2. Fire a driver")
+                print("3. Update contact")
+                print("4. Add a cab")
+                print("5. Remove a cab")
+                print("6. Update color of a cab")
+                print("7. Add car model")
+                print("8. Remove car model")
+                print("9. Add shift")
+                print("10. Remove shift")
+                print("11. Assign driver a shift")
+                print("12. Remove driver from a shift")
+                print("13. Add cab to a shift")
+                print("14. Remove cab from a shift")
+                print("15. Add a rider")
+                print("16. Request a ride")
+                print("17. Enter details of an accident")
+                print("18. Change ride status")
+                print("19. Logout")
                 ch = int(input("Enter choice> "))
                 tmp = sp.call('clear',shell=True)
-                if ch==5:
+                if ch==20:
                     break
                 else:
                     dispatch(ch)
