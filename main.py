@@ -68,22 +68,28 @@ def addDriver():
 
     except Exception as e:
         con.rollback()
-        print("Failed to insert into database")
+        print("Failed to insert into database add driv")
         print (">>>>>>>>>>>>>", e)
         
     return
 
 def removePerson():
     try:
-        ssn = int(input('SSN:'))
-        query = "DELETE * FROM PERSON WHERE SSN = %s"  % (ssn)
-        print(query)
-        cur.execute(query)
-        con.commit()
+        ssn = input('SSN:')
+        print(type(ssn))
+        query1 = "SELECT * FROM DRIVER WHERE SSN = %s" %(ssn)
+        row = cur.execute(query1)
+        if(row == 1):
+            query = "DELETE FROM PERSON WHERE SSN = %s"  % (ssn)
+            print(query)
+            cur.execute(query)
+            con.commit()
+        else:
+            print('The driver does not exist in the database')
 
     except Exception as e:
         con.rollback()
-        print("Failed to insert into database")
+        print("Failed to insert into database remo")
         print (">>>>>>>>>>>>>", e)
         
     return
@@ -189,7 +195,7 @@ def dispatch(ch):
     if(ch==1): 
         addDriver()
     elif(ch==2):
-        fireAnEmployee()
+        removePerson()
     elif(ch==3):
         promoteEmployee()
     elif(ch==4):
@@ -236,10 +242,13 @@ while(1):
                 print("13. Add cab to a shift")
                 print("14. Remove cab from a shift")
                 print("15. Add a rider")
-                print("16. Request a ride")
-                print("17. Enter details of an accident")
-                print("18. Change ride status")
-                print("19. Logout")
+                print("16. Add emergency contact")
+                print("17. Request a ride")
+                print("18. Enter details of an accident")
+                print("19. Change ride status")
+                print("20. Print Drivers")
+                print("21. Print Cabs")
+                print("22. Logout")
                 ch = int(input("Enter choice> "))
                 tmp = sp.call('clear',shell=True)
                 if ch==20:
