@@ -77,10 +77,10 @@ def removePerson():
     try:
         ssn = input('SSN:')
         print(type(ssn))
-        query1 = "SELECT * FROM DRIVER WHERE SSN = %s" %(ssn)
+        query1 = "SELECT * FROM DRIVER WHERE SSN = '%s'" %(ssn)
         row = cur.execute(query1)
         if(row == 1):
-            query = "DELETE FROM PERSON WHERE SSN = %s"  % (ssn)
+            query = "DELETE FROM PERSON WHERE SSN = '%s'"  % (ssn)
             print(query)
             cur.execute(query)
             con.commit()
@@ -118,7 +118,7 @@ def addCab():
 def removeCab():
     try:
         vrn = int(input('Enter the Cab VRN to be deleted from the database : '))
-        query = "DELETE FROM Cab WHERE VRN = %s" %(vrn)
+        query = "DELETE FROM Cab WHERE VRN = '%s'" %(vrn)
         cur.execute(query)
         con.commit()
     
