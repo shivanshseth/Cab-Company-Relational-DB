@@ -29,9 +29,9 @@ def employeeStatistics():
 
 def addPerson(record):
     try:
-        query = "INSERT INTO PERSON(SSN, First_name, Last_name, Year, Month, Day, Contact) VALUES('%d', '%s', '%s', '%d', '%d', '%d', '%d')" 
+        query = "INSERT INTO PERSON(SSN, First_name, Last_name, Year, Month, Day, Contact) VALUES(%s, %s, %s, %s, %s, %s, %s)" 
         record = tuple(record)
-        print(query)
+        # print(query)
         cur.execute(query, record)
         con.commit()
 
@@ -39,26 +39,30 @@ def addPerson(record):
 
     except Exception as e:
         con.rollback()
-        print("Failed to insert into database")
+        print("Failed to insert into database in addperson")
         print (">>>>>>>>>>>>>", e)
         
     return
 
 def addDriver():
     try:
-        record = []
+        record = [0]*7  
         print("Enter driver details:")
-        record[0] = int(input('SSN: '))
+        record[0] = input('SSN: ')
         record[1:3] = input('Name: ').split(' ')
-        record[3:6] = list(map(int, input('DOB (in yyyy-mm-dd format): ').split('-')))
+        dob = input('DOB: ').split('-')
+        record[3] = int(dob[0])
+        record[4] = int(dob[1])
+        record[5] = int(dob[2])
         record[6] = int(input('Contact: '))
+        print(record)
         addPerson(record)
-        record[1:]=[]
+        record[1:]=[0, 0]
         record[1] = input('License Number: ')
         record[2] = True;
-        query = "INSERT INTO DRIVER(SSN, License_number, Availability) VALUES('%d', '%s', '%b')" 
+        query = "INSERT INTO DRIVER(SSN, License_number, Availability) VALUES(%s, %s, %s)" 
         record = tuple(record)
-        print(query)
+        print(record)
         cur.execute(query, record)
         con.commit()
 
@@ -92,12 +96,11 @@ def addCab():
         record[1] = int(input('Manufacture Year: '))
         record[2] = true
         record[3] = int(input('Model Id: '))
-        query = "INSERT INTO Cab(VRN, Manufacture_Year, Availability, Model_Id) VALUES('%d', '%d', '%d', '%d')" 
+        query = "INSERT INTO Cab(VRN, Manufacture_Year, Availability, Model_Id) VALUES(%s, %s, %s, %s)" 
         record = tuple(record)
         print(query)
         cur.execute(query, record)
         con.commit()
-
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
@@ -108,7 +111,7 @@ def addCab():
 def removeCab():
     try:
         vrn = int(input('Enter the Cab VRN to be deleted from the database : '))
-        query = "DELETE FROM Cab WHERE VRN = %d" %(vrn)
+        query = "DELETE FROM Cab WHERE VRN = %s" %(vrn)
         cur.execute(query)
         con.commit()
     
@@ -125,7 +128,7 @@ def addCabModel():
         record[0] = int(input('Model Id: '))
         record[1] = input('Company: ')
         record[2] = input('Class: ')
-        query = "INSERT INTO Car_Model(Model_Id, Company, Class) VALUES('%d', '%s', '%s')" 
+        query = "INSERT INTO Car_Model(Model_Id, Company, Class) VALUES(%s, %s, %s)" 
         record = tuple(record)
         print(query)
         cur.execute(query, record)
@@ -148,7 +151,7 @@ def updateColorofCab():
         cur.execute(query)
         while flag == 0:
             record[i] = input('Enter the color: ')
-            query = "INSERT INTO Cab_Color(VRN, Color) VALUES('%d', '%s')"
+            query = "INSERT INTO Cab_Color(VRN, Color) VALUES(%d, %s)"
             record = tuple(record)
             cur.execute(query,record)
         con.commit()
@@ -163,7 +166,7 @@ def dispatch(ch):
     """
 
     if(ch==1): 
-        hireAnEmployee()
+        addDriver()
     elif(ch==2):
         fireAnEmployee()
     elif(ch==3):
@@ -183,7 +186,7 @@ while(1):
         con = pymysql.connect(host='localhost',
                 user=username,
                 password=password,
-                db='COMPANY',
+                db='CAB_SERVICE',
                 cursorclass=pymysql.cursors.DictCursor)
         tmp = sp.call('clear',shell=True)
 
@@ -200,10 +203,10 @@ while(1):
                 print("1. Hire a new driver")
                 print("2. Fire a driver")
                 print("3. Update contact")
-                print("4. Add a cab")-
-                print("5. Remove a cab")-
-                print("6. Update color of a cab")-
-                print("7. Add car model")-
+                print("4. Add a cab")
+                print("5. Remove a cab")
+                print("6. Update color of a cab")
+                print("7. Add car model")
                 print("8. Remove car model")
                 print("9. Add shift")
                 print("10. Remove shift")
