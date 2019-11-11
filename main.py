@@ -84,6 +84,7 @@ def removePerson():
         
     return
 
+#4
 def addCab():
     try:
         record = []
@@ -104,7 +105,7 @@ def addCab():
         print (">>>>>>>>>>>>>", e)
         
     return
-
+#5
 def removeCab():
     try:
         vrn = int(input('Enter the Cab VRN to be deleted from the database : '))
@@ -118,6 +119,27 @@ def removeCab():
         print (">>>>>>>>>>>>>", e)
 
 
+#6
+def updateColorofCab():
+    try:
+        vrn = int(input('Enter the Cab VRN: '))
+        record = []
+        flag = 0
+        i = 0
+        query = 'DELETE FROM Cab_Color WHERE VRN = %d' %(vrn)
+        cur.execute(query)
+        while flag == 0:
+            record[i] = input('Enter the color: ')
+            query = "INSERT INTO Cab_Color(VRN, Color) VALUES('%d', '%s')"
+            record = tuple(record)
+            cur.execute(query,record)
+        con.commit()
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database")
+        print (">>>>>>>>>>>>>", e)
+
+#7
 def addCabModel():
     try:
         record = []
@@ -138,20 +160,14 @@ def addCabModel():
         
     return
 
-def updateColorofCab():
+#8
+def removeCarModel():
     try:
-        vrn = int(input('Enter the Cab VRN: '))
-        record = []
-        flag = 0
-        i = 0
-        query = 'DELETE FROM Cab_Color WHERE VRN = %d' %(vrn)
+        mod = int(input('Enter the Model Id to be deleted: '))
+        query = "DELETE FROM Car_Model WHERE Model_Id = %d" %(mod)
         cur.execute(query)
-        while flag == 0:
-            record[i] = input('Enter the color: ')
-            query = "INSERT INTO Cab_Color(VRN, Color) VALUES('%d', '%s')"
-            record = tuple(record)
-            cur.execute(query,record)
         con.commit()
+
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
@@ -200,10 +216,10 @@ while(1):
                 print("1. Hire a new driver")
                 print("2. Fire a driver")
                 print("3. Update contact")
-                print("4. Add a cab")-
-                print("5. Remove a cab")-
-                print("6. Update color of a cab")-
-                print("7. Add car model")-
+                print("4. Add a cab")
+                print("5. Remove a cab")
+                print("6. Update color of a cab")
+                print("7. Add car model")
                 print("8. Remove car model")
                 print("9. Add shift")
                 print("10. Remove shift")
