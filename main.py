@@ -169,14 +169,11 @@ def removeCarModel():
         mod = int(input('Enter the Model Id to be deleted: '))
         query = "DELETE FROM Car_Model WHERE Model_Id = %d" %(mod)
         cur.execute(query)
-<<<<<<< HEAD
         while flag == 0:
             record[i] = input('Enter the color: ')
             query = "INSERT INTO Cab_Color(VRN, Color) VALUES(%d, %s)"
             record = tuple(record)
             cur.execute(query,record)
-=======
->>>>>>> ed6528e104e269deee61a6a565a9d440d84e63bd
         con.commit()
 
     except Exception as e:
