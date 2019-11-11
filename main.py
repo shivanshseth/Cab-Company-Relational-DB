@@ -88,6 +88,7 @@ def removePerson():
         
     return
 
+#4
 def addCab():
     try:
         record = []
@@ -107,7 +108,7 @@ def addCab():
         print (">>>>>>>>>>>>>", e)
         
     return
-
+#5
 def removeCab():
     try:
         vrn = int(input('Enter the Cab VRN to be deleted from the database : '))
@@ -121,6 +122,27 @@ def removeCab():
         print (">>>>>>>>>>>>>", e)
 
 
+#6
+def updateColorofCab():
+    try:
+        vrn = int(input('Enter the Cab VRN: '))
+        record = []
+        flag = 0
+        i = 0
+        query = 'DELETE FROM Cab_Color WHERE VRN = %d' %(vrn)
+        cur.execute(query)
+        while flag == 0:
+            record[i] = input('Enter the color: ')
+            query = "INSERT INTO Cab_Color(VRN, Color) VALUES('%d', '%s')"
+            record = tuple(record)
+            cur.execute(query,record)
+        con.commit()
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database")
+        print (">>>>>>>>>>>>>", e)
+
+#7
 def addCabModel():
     try:
         record = []
@@ -141,20 +163,22 @@ def addCabModel():
         
     return
 
-def updateColorofCab():
+#8
+def removeCarModel():
     try:
-        vrn = int(input('Enter the Cab VRN: '))
-        record = []
-        flag = 0
-        i = 0
-        query = 'DELETE FROM Cab_Color WHERE VRN = %d' %(vrn)
+        mod = int(input('Enter the Model Id to be deleted: '))
+        query = "DELETE FROM Car_Model WHERE Model_Id = %d" %(mod)
         cur.execute(query)
+<<<<<<< HEAD
         while flag == 0:
             record[i] = input('Enter the color: ')
             query = "INSERT INTO Cab_Color(VRN, Color) VALUES(%d, %s)"
             record = tuple(record)
             cur.execute(query,record)
+=======
+>>>>>>> ed6528e104e269deee61a6a565a9d440d84e63bd
         con.commit()
+
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
