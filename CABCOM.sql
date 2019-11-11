@@ -26,7 +26,7 @@ CREATE TABLE `PERSON` (
   `Last_name` varchar(20) NOT NULL,
   `Year` int(4) NOT NULL,
   `Month` int(4) NOT NULL,
-  `Date` int(4) NOT NULL,
+  `Day` int(4) NOT NULL,
   `Contact` int(10) NOT NULL,
   PRIMARY KEY (`SSN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
