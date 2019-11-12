@@ -96,13 +96,13 @@ def updateContact():
 #4
 def addCab():
     try:
-        record = []
+        record = [0]*4
         print("Enter cab details:")
-        record[0] = int(input('VRN: '))
+        record[0] = input('VRN: ')
         record[1] = int(input('Manufacture Year: '))
-        record[2] = true
-        record[3] = int(input('Model Id: '))
-        query = "INSERT INTO Cab(VRN, Manufacture_Year, Availability, Model_Id) VALUES(%s, %s, %s, %s)" 
+        record[2] = True
+        record[3] = input('Model Id: ')
+        query = "INSERT INTO CAB(VRN, Manufacture_Year, Availability, Model_Id) VALUES(%s, %s, %s, %s)" 
         record = tuple(record)
         print(query)
         cur.execute(query, record)
@@ -117,7 +117,7 @@ def addCab():
 def removeCab():
     try:
         vrn = int(input('Enter the Cab VRN to be deleted from the database : '))
-        query = "DELETE FROM Cab WHERE VRN = '%s'" %(vrn)
+        query = "DELETE FROM CAB WHERE VRN = '%s'" %(vrn)
         cur.execute(query)
         con.commit()
     
@@ -129,14 +129,14 @@ def removeCab():
 def updateColorofCab():
     try:
         vrn = int(input('Enter the Cab VRN: '))
-        record = []
+        record = [0]*10
         flag = 0
         i = 0
-        query = 'DELETE FROM Cab_Color WHERE VRN = %d' %(vrn)
+        query = 'DELETE FROM CAB_COLOR WHERE VRN = %d' %(vrn)
         cur.execute(query)
         while flag == 0:
             record[i] = input('Enter the color: ')
-            query = "INSERT INTO Cab_Color(VRN, Color) VALUES('%d', '%s')"
+            query = "INSERT INTO CAB_COLOR(VRN, Color) VALUES('%d', '%s')"
             record = tuple(record)
             cur.execute(query,record)
         con.commit()
@@ -147,12 +147,12 @@ def updateColorofCab():
 #7
 def addCarModel():
     try:
-        record = []
+        record = [0]*10
         print("Enter Cab Model details:")
-        record[0] = int(input('Model Id: '))
+        record[0] = input('Model Id: ')
         record[1] = input('Company: ')
         record[2] = input('Class: ')
-        query = "INSERT INTO Car_Model(Model_Id, Company, Class) VALUES(%s, %s, %s)" 
+        query = "INSERT INTO CAR_MODEL(Model_Id, Company, Class) VALUES(%s, %s, %s)" 
         record = tuple(record)
         print(query)
         cur.execute(query, record)
@@ -168,13 +168,8 @@ def addCarModel():
 def removeCarModel():
     try:
         mod = int(input('Enter the Model Id to be deleted: '))
-        query = "DELETE FROM Car_Model WHERE Model_Id = %d" %(mod)
+        query = "DELETE FROM CAR_MODEL WHERE Model_Id = %d" %(mod)
         cur.execute(query)
-        while flag == 0:
-            record[i] = input('Enter the color: ')
-            query = "INSERT INTO Cab_Color(VRN, Color) VALUES(%d, %s)"
-            record = tuple(record)
-            cur.execute(query,record)
         con.commit()
 
     except Exception as e:
@@ -331,7 +326,7 @@ def addEmergencyContact():
         query1 = "SELECT * From Emergency_Contact WHERE Rider_SSN = '%s' " %(ssn)
         co = cur.execute(query1)
         if(co == 0):
-            record = []
+            record = [0]*10
             record[0] = input("Enter the Emergency Contact number")
             record[1] = ssn
             query = "INSERT INTO Emergency_Contact(Contact,Rider_SSN) VALUES(%s,%s)"
@@ -353,7 +348,7 @@ def requestARide():
         query = "SELECT * FROM REQUEST"
         request_id = cur.execute(query) + 1
         query = "INSERT INTO Request(Request_id,Request_time,Rider_SSN) VALUES(%s,%s,%s)"
-        record = []
+        record = [0]*10
         record[0] = request_id
         record[1] = curtime
         record[2] = ssn
@@ -363,7 +358,7 @@ def requestARide():
         if(co == 0):
             print("No Drivers available right now. Please try again later.")
         else:
-            record = []
+            record = [0]*10
 
     except Exception as e:
         con.rollback()
@@ -378,7 +373,7 @@ def addAccidentDetails():
         if(co == 0):
             print("Driver doesnt exist.")
         else:
-            record = []
+            record = [0]*10
             record[0] = time(input("Enter the time of the accident: "))
             record[1] = ssn
             record[2] = input("Enter the location of the accident: ")
@@ -392,6 +387,7 @@ def addAccidentDetails():
         print (">>>>>>>>>>>>>", e)
 #19
 def changeStatus():
+    return
 #20
 def printDrivers():
     try:
