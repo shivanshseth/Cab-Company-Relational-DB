@@ -344,7 +344,7 @@ def addEmergencyContact():
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
         print (">>>>>>>>>>>>>", e)         
-#17
+#17 #fill this ride request
 def requestARide():
     try:
         ssn = input("Enter your SSN: ")
@@ -358,7 +358,12 @@ def requestARide():
         record[1] = curtime
         record[2] = ssn
         cur.execute(query,record)
-        con.commit()
+        query = "SELECT * FROM DRIVER WHERE Availability = 0"
+        co = cur.execute(query)
+        if(co == 0):
+            print("No Drivers available right now. Please try again later.")
+        else:
+            record = []
 
     except Exception as e:
         con.rollback()
@@ -411,6 +416,7 @@ def printCabs():
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
         print (">>>>>>>>>>>>>", e)
+#22
 
 def dispatch(ch):
     """
@@ -469,8 +475,6 @@ def dispatch(ch):
         removeShift()
     elif(ch==26):
         removeShift()
-    elif(ch==27):
-        removeShift()
     else:
         print("Error: Invalid Option")
 
@@ -527,7 +531,7 @@ while(1):
                 print("27. Logout")
                 ch = int(input("Enter choice> "))
                 tmp = sp.call('clear',shell=True)
-                if ch==20:
+                if ch==27:
                     break
                 else:
                     dispatch(ch)
