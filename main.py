@@ -26,8 +26,8 @@ def addDriver():
         record = [0]*7  
         print("Enter driver details:")
         record[0] = input('SSN: ')
-        record[1:3] = input('Name: ').split(' ')
-        dob = input('DOB: ').split('-')
+        record[1:3] = input('Name(Firstname Lastname): ').split(' ')
+        dob = input('DOB(In yyyy-mm-dd format): ').split('-')
         record[3] = int(dob[0])
         record[4] = int(dob[1])
         record[5] = int(dob[2])
@@ -116,7 +116,7 @@ def addCab():
 #5
 def removeCab():
     try:
-        vrn = int(input('Enter the Cab VRN to be deleted from the database : '))
+        vrn = input('Enter the Cab VRN to be deleted from the database : ')
         query = "DELETE FROM CAB WHERE VRN = '%s'" %(vrn)
         cur.execute(query)
         con.commit()
@@ -128,7 +128,7 @@ def removeCab():
 #6
 def updateColorofCab():
     try:
-        vrn = int(input('Enter the Cab VRN: '))
+        vrn = input('Enter the Cab VRN: ')
         record = [0]*10
         flag = 0
         i = 0
@@ -147,7 +147,7 @@ def updateColorofCab():
 #7
 def addCarModel():
     try:
-        record = [0]*10
+        record = [0]*3
         print("Enter Cab Model details:")
         record[0] = input('Model Id: ')
         record[1] = input('Company: ')
@@ -167,8 +167,8 @@ def addCarModel():
 #8
 def removeCarModel():
     try:
-        mod = int(input('Enter the Model Id to be deleted: '))
-        query = "DELETE FROM CAR_MODEL WHERE Model_Id = %d" %(mod)
+        mod = input('Enter the Model Id to be deleted: ')
+        query = "DELETE FROM CAR_MODEL WHERE Model_Id = '%s'" %(mod)
         cur.execute(query)
         con.commit()
 
@@ -347,7 +347,7 @@ def requestARide():
         curtime = now.strftime("%H:%M")
         query = "SELECT * FROM REQUEST"
         request_id = cur.execute(query) + 1
-        query = "INSERT INTO Request(Request_id,Request_time,Rider_SSN) VALUES(%s,%s,%s)"
+        query = "INSERT INTO REQUEST(Request_id,Request_time,Rider_SSN) VALUES(%s,%s,%s)"
         record = [0]*10
         record[0] = request_id
         record[1] = curtime
