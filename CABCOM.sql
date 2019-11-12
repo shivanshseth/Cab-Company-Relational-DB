@@ -14,6 +14,14 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE USER IF NOT EXISTS 'admin'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'admin'@'localhost';
+
+CREATE USER IF NOT EXISTS 'rider'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'rider'@'localhost';
+
+CREATE USER IF NOT EXISTS 'driver'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON * . * TO 'driver'@'localhost';
 
 DROP DATABASE IF EXISTS `CAB_SERVICE`;
 CREATE SCHEMA `CAB_SERVICE`;
@@ -27,7 +35,7 @@ CREATE TABLE `PERSON` (
   `Year` int(4) NOT NULL,
   `Month` int(4) NOT NULL,
   `Day` int(4) NOT NULL,
-  `Contact` int(10) NOT NULL,
+  `Contact` bigint(10) NOT NULL,
   PRIMARY KEY (`SSN`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -79,7 +87,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `REQUEST`;
 CREATE TABLE `REQUEST` (
-  `Request_id` int(11) NOT NULL,
+  `Request_id` int(11) NOT NULL,  
   `Request_time` time(6) NOT NULL,
   `Rider_SSN` varchar(15) NOT NULL,
   PRIMARY KEY (`Request_id`),
@@ -138,7 +146,7 @@ DROP TABLE IF EXISTS `RIDE`;
 CREATE TABLE `RIDE` (
   `Request_id` int(11) NOT NULL,
   `Ride_start` time(6) NOT NULL,
-  `Ride_end` time(6) NOT NULL,
+  `Ride_end` time(6),
   `Starting_pos` varchar(50) NOT NULL,
   `Ending_pos` varchar(50) NOT NULL,
   `Shift_id` int(15) NOT NULL,
@@ -158,7 +166,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `EMERGENCY_CONTACT`;
 CREATE TABLE `EMERGENCY_CONTACT` (
-  `Contact` int(10) NOT NULL,
+  `Contact` bigint(10) NOT NULL,
   `Rider_SSN` varchar(15) NOT NULL,
   PRIMARY KEY (`Contact`,`Rider_SSN`),
   FOREIGN Key (`Rider_SSN`) REFERENCES `RIDER` (`SSN`) ON DELETE CASCADE
