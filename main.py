@@ -624,7 +624,7 @@ def printTypesOfCabs():
         co = []
         for i in record:
             cla.append(i['Class'])
-            co.append(i['count(*)'])
+            co.append(i['Count(*)'])
 
         for row in zip(cla,co):
             tab.add_row(row)
@@ -695,7 +695,7 @@ def printRequests():
     try:
         newcur = con.cursor()
         ssn = input("Enter the Rider's ssn whose requests you want to list: ")
-        query = "SELECT * from REQUEST WHERE Request_id = '%s'" %(ssn)
+        query = "SELECT * from REQUEST WHERE Rider_SSN = '%s'" %(ssn)
         newcur.execute(query)
         record = newcur.fetchall()
         tab = tt.Texttable()
@@ -899,7 +899,7 @@ while(1):
                     print("10. Logout")
                     ch = int(input("Enter choice> "))
                     tmp= sp.call('clear',shell=True)
-                    if ch==11:
+                    if ch==10:
                         break
                     else:
                         dispatch_rider(ch)
