@@ -18,7 +18,7 @@ def addPerson(record):
     except Exception as e:
         con.rollback()
         print("Failed to insert into database in addperson")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
         return -1
 #1
 def addDriver():
@@ -49,7 +49,7 @@ def addDriver():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database add driv")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
         
     return
 #2
@@ -70,7 +70,7 @@ def removePerson():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database remo")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
         
     return
 #3
@@ -90,7 +90,7 @@ def updateContact():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 
     return
 #4
@@ -110,7 +110,7 @@ def addCab():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
         
     return
 #5
@@ -124,7 +124,7 @@ def removeCab():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #6
 def updateColorofCab():
     try:
@@ -143,7 +143,7 @@ def updateColorofCab():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #7
 def addCarModel():
     try:
@@ -161,7 +161,7 @@ def addCarModel():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
         
     return
 #8
@@ -175,24 +175,22 @@ def removeCarModel():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #9
 def addShift():
     try:
         print("Enter the details for adding a new shift: ")
-        st = []
-        et = []
-        st = input("Enter the start time: ").split(':')
-        et = input("Enter the end time: ").split(':')
+        st = input("Enter the start time(hh:mm format): ")
+        et = input("Enter the end time(hh:mm) format: ")
         flag = 0
-        query1 = "SELECT * FROM SHIFT WHERE SHIFT as S, S.Start_time < st AND S.End_time < et"
+        query1 = "SELECT * FROM SHIFT as S WHERE S.Start_time < '%s' AND S.End_time < '%s'" %(st, et)
         co = cur.execute(query1)
-        query1 = "SELECT * FROM SHIFT WHERE SHIFT as S, S.Start_time < et AND S.End_time > et"
+        query1 = "SELECT * FROM SHIFT as S WHERE S.Start_time < '%s' AND S.End_time > '%s'" %(et, st)
         co += cur.execute(query1)
         if(co == 0):
             query = "SELECT * FROM SHIFT"
             co = cur.execute(query)
-            query = "INSERT INTO SHIFT(Shift_Id,Start_time,End_time) VALUES(%s,'%s:%s','%s:%s')"%(co+1,st[0],st[1],et[0],et[1])
+            query = "INSERT INTO SHIFT(Shift_Id,Start_time,End_time) VALUES(%s,'%s','%s')"%(co+1,st, et)
             cur.execute(query)
             con.commit()
         else:
@@ -201,7 +199,7 @@ def addShift():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database add shift")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #10
 def removeShift():
     try:
@@ -213,83 +211,59 @@ def removeShift():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database remove shift")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #11
 def assignShifttoDriver():
     try:
         ssn = input('Enter the SSN of the Cab Driver: ')
         shift_Id = input('Enter the Shift you want the driver to be assigned to: ')
-        query1 = "SELECT * FROM Driver_Shift WHERE SSN = '%s' "%(ssn)
-        co = cur.execute(query1)
-        if(co == 0):
-            query = "INSERT INTO DRIVER_SHIFT(Driver_SSN,Shift_Id) VALUES(%s,%s)" %(ssn,shift_Id)
-            cur.execute(query)
-            con.commit()
-        else:
-            query = "UPDATE DRIVER_SHIFT SET Shift_Id = %s WHERE Driver_ssn = '%s' " %(shift_Id,ssn)
-            cur.execute(query)
-            con.commit()
+        query = "INSERT INTO DRIVER_SHIFT(Driver_SSN,Shift_Id) VALUES(%s,%s)" %(ssn,shift_Id)
+        cur.execute(query)
+        con.commit()
     
     except Exception as e:
         con.rollback()
         print("Failed to insert into database assignShifttoDriver")
-        print (">>>>>>>>>>>>>", e)      
+        print ("Error:", e)      
 #12
 def removeDriverfromShift():
     try:
         ssn = input('Enter the SSN of the Cab Driver: ')
         shift_Id = input('Enter the Shift you want the driver to be removed from: ')
-        query1 = "SELECT Availability FROM Driver_Shift WHERE SSN = '%s' "%(ssn)
-        co = cur.execute(query1)
-        if(co == true):
-            query = "DELETE FROM DRIVER_SHIFT WHERE Driver_ssn = '%s' " %(ssn)
-            cur.execute(query)
-            con.commit()
-        else:
-            print("The driver is currently completing a ride. Please try again later.")
+        query = "DELETE FROM DRIVER_SHIFT WHERE Driver_SSN = '%s' AND Shift_Id = '%s' " %(ssn, shift_Id)
+        cur.execute(query)
+        con.commit()
 
     except Exception as e:
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
-        print (">>>>>>>>>>>>>", e)      
+        print ("Error:", e)      
 #13
 def assignShifttoCab():
     try:
         vrn = input('Enter the VRN of the Cab: ')
-        shift_Id = input('Enter the Shift you want the cab to be assigned to: ')
-        query1 = "SELECT * FROM Cab_Shift WHERE VRN = '%s' "%(vrn)
-        co = cur.execute(query1)
-        if(co == 0):
-            query = "INSERT INTO Cab_Shift(VRN,Shift_Id) VALUES(%s,%s)" %(vrn,shift_Id)
-            cur.execute(query)
-            con.commit()
-        else:
-            query = "UPDATE Cab_SHIFT SET Shift_Id = %s WHERE VRN = '%s' " %(shift_Id,vrn)
-            cur.execute(query)
-            con.commit()
-    
+        shift_Id = input('Enter the Shift you want the cab to be added to: ')
+        query = "INSERT INTO CAB_SHIFT(VRN,Shift_Id) VALUES('%s',%s)" %(vrn, shift_Id)
+        cur.execute(query)
+        con.commit()
+
     except Exception as e:
         con.rollback()
-        print("Failed to insert into database assignShifttoCab")
-        print (">>>>>>>>>>>>>", e)      
+        print("Failed to insert into database removeDriverfromShift")
+        print ("Error:", e)   
 #14
 def removeCabfromShift():
     try:
-        vrn = input('Enter the SSN of the Cab: ')
+        vrn = input('Enter the VRN of the Cab: ')
         shift_Id = input('Enter the Shift you want the cab to be removed from: ')
-        query1 = "SELECT Availability FROM Cab_Shift WHERE VRN = '%s' "%(vrn)
-        co = cur.execute(query1)
-        if(co == true):
-            query = "DELETE FROM Cab_SHIFT WHERE VRN = '%s' " %(vrn)
-            cur.execute(query)
-            con.commit()
-        else:
-            print("The cab is currently completing a ride. Please try again later.")
+        query = "DELETE FROM CAB_SHIFT WHERE VRN = '%s' AND Shift_Id = '%s' " %(vrn, shift_Id)
+        cur.execute(query)
+        con.commit()
 
     except Exception as e:
         con.rollback()
         print("Failed to insert into database removeCabfromShift")
-        print (">>>>>>>>>>>>>", e)      
+        print ("Error:", e)      
 #15
 def addRider():
     try:
@@ -302,21 +276,20 @@ def addRider():
         record[4] = int(dob[1])
         record[5] = int(dob[2])
         record[6] = int(input('Contact: '))
-        print(record)
+        # print(record)
         flag = addPerson(record)
         if(flag == -1):
-            print("Error")
             return
-        query = "INSERT INTO Rider(SSN) VALUES(%s)" 
-        record = tuple(record)
-        print(record)
+        query = "INSERT INTO RIDER(SSN) VALUES(%s)" 
+        record = (record[0])
+        # print(record)
         cur.execute(query, record)
         con.commit()
 
     except Exception as e:
         con.rollback()
         print("Failed to insert into database add rider")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
         
     return
 #16
@@ -338,7 +311,7 @@ def addEmergencyContact():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
-        print (">>>>>>>>>>>>>", e)         
+        print ("Error:", e)         
 #17 #fill this ride request
 def requestARide():
     try:
@@ -363,7 +336,7 @@ def requestARide():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
-        print (">>>>>>>>>>>>>", e)  
+        print ("Error:", e)  
 #18
 def addAccidentDetails():
     try:
@@ -384,7 +357,7 @@ def addAccidentDetails():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #19
 def changeStatus():
     return
@@ -399,7 +372,7 @@ def printDrivers():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #21
 def printCabs():
     try:
@@ -411,7 +384,7 @@ def printCabs():
     except Exception as e:
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
-        print (">>>>>>>>>>>>>", e)
+        print ("Error:", e)
 #22
 
 def dispatch(ch):

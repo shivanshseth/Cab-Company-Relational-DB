@@ -38,7 +38,7 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `SHIFT`;
 CREATE TABLE `SHIFT` (
-  `Shift_id` varchar(15) NOT NULL,
+  `Shift_id` int NOT NULL AUTO_INCREMENT,
   `Start_time` time(6) NOT NULL,
   `End_time` time(6) NOT NULL,
   
@@ -141,7 +141,7 @@ CREATE TABLE `RIDE` (
   `Ride_end` time(6) NOT NULL,
   `Starting_pos` varchar(50) NOT NULL,
   `Ending_pos` varchar(50) NOT NULL,
-  `Shift_id` varchar(15) NOT NULL,
+  `Shift_id` int(15) NOT NULL,
   `Cab_VRN` varchar(11) NOT NULL,
   `Driver_SSN` varchar(15) NOT NULL,
   PRIMARY KEY (`Request_id`),
@@ -173,7 +173,7 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `DRIVER_SHIFT`;
 CREATE TABLE `DRIVER_SHIFT` (
   `Driver_SSN` varchar(15) NOT NULL,
-  `Shift_id` varchar(15) NOT NULL,
+  `Shift_id` int NOT NULL,
   
   PRIMARY KEY (`Driver_SSN`,`Shift_id`),
   FOREIGN Key (`Shift_id`) REFERENCES `SHIFT` (`Shift_id`) ON DELETE CASCADE,
@@ -181,17 +181,17 @@ CREATE TABLE `DRIVER_SHIFT` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `DRIVER_SHIFT` WRITE;
-INSERT INTO `DRIVER_SHIFT` VALUES ('5' ,'1298-3108-1298');
+INSERT INTO `DRIVER_SHIFT` VALUES ('1298-3108-1298', '5');
 UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `CAB_SHIFT`;
 CREATE TABLE `CAB_SHIFT` (
   `VRN` varchar(11) NOT NULL,
-  `Shift_id` varchar(15) NOT NULL,
+  `Shift_id` int NOT NULL,
 
   PRIMARY KEY (`VRN`,`Shift_id`),
   FOREIGN Key (`VRN`) REFERENCES `CAB` (`VRN`) ON DELETE CASCADE,
-  FOREIGN Key (`Shift_id`) REFERENCES `DRIVER_SHIFT` (`Shift_id`) ON DELETE CASCADE
+  FOREIGN Key (`Shift_id`) REFERENCES `SHIFT` (`Shift_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 LOCK TABLES `CAB_SHIFT` WRITE;
