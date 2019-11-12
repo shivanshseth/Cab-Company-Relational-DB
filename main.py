@@ -664,6 +664,59 @@ def printShifts():
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
         print (">>>>>>>>>>>>>", e)
+#28
+def printRider():
+    try:
+        newcur = con.cursor()
+        query = "SELECT r.SSN, p.First_name, p.Last_name from RIDER as r, PERSON as p where r.SSN=p.SSN"
+        newcur.execute(query)
+        record = newcur.fetchall()
+        tab = tt.Texttable()
+        headings = ['SSN','Name']
+        tab.header(headings)
+        ssn = []
+        name = []
+        for i in record:
+            ssn.append(i['SSN'])
+            name.append(i['First_name']+' '+i['Last_name'])
+
+        for row in zip(ssn,name):
+            tab.add_row(row)
+
+        s = tab.draw()
+        print (s)
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)
+#29
+def printRequests():
+    try:
+        newcur = con.cursor()
+        ssn = input("Enter the Rider's ssn whose requests you want to list: ")
+        query = "SELECT * from REQUEST WHERE Request_id = '%s'" %(ssn)
+        newcur.execute(query)
+        record = newcur.fetchall()
+        tab = tt.Texttable()
+        headings = ['Request_id','Request_time']
+        tab.header(headings)
+        r_id = []
+        r_time = []
+        for i in record:
+            r_id.append(i['Request_id'])
+            r_time.append(i['Request_time'])
+        
+        for row in zip(r_id,r_time):
+            tab.add_row(row)
+
+        s = tab.draw()
+        print (s)
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)
 
 def dispatch_admin(ch):
     """
@@ -724,6 +777,10 @@ def dispatch_admin(ch):
         printTypesOfCabs()
     elif(ch==27):
         printShifts()
+    elif(ch==28):
+        printRider()
+    elif(ch==29):
+        printRequests()
     else:
         print("Error: Invalid Option")
 
@@ -747,6 +804,8 @@ def dispatch_rider(ch):
         changeStatus()
     elif(ch==8):
         printTypesOfCabs()
+    elif(ch==9):
+        printRequests()
     else:
         print("Error: Invalid Option")
 
@@ -816,10 +875,12 @@ while(1):
                     print("25. Print All Accidents a Driver has been part of")
                     print("26. Print All Cabs of a certain type")
                     print("27. Print Shifts")
-                    print("28. Logout")
+                    print("28. Print Riders")
+                    print("29. Print Requests")
+                    print("30. Logout")
                     ch = int(input("Enter choice> "))
                     tmp = sp.call('clear',shell=True)
-                    if ch==28:
+                    if ch==30:
                         break
                     else:
                         dispatch_admin(ch)
@@ -834,10 +895,11 @@ while(1):
                     print("6. Print All Accidents a Driver has been part of")
                     print("7. Change ride status")
                     print("8. Check Availability of cab")
-                    print("9. Logout")
+                    print("9. Print Your Requests")
+                    print("10. Logout")
                     ch = int(input("Enter choice> "))
                     tmp= sp.call('clear',shell=True)
-                    if ch==9:
+                    if ch==11:
                         break
                     else:
                         dispatch_rider(ch)
