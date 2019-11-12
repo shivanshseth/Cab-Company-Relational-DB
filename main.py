@@ -1,6 +1,7 @@
 import subprocess as sp
 import pymysql
 import pymysql.cursors
+from datetime import datetime
 
 #1
 def addPerson(record):
@@ -12,13 +13,13 @@ def addPerson(record):
         con.commit()
 
         print("Inserted Into Database")
+        return 1
 
     except Exception as e:
         con.rollback()
         print("Failed to insert into database in addperson")
         print (">>>>>>>>>>>>>", e)
-        
-    return
+        return -1
 #1
 def addDriver():
     try:
@@ -32,7 +33,10 @@ def addDriver():
         record[5] = int(dob[2])
         record[6] = int(input('Contact: '))
         print(record)
-        addPerson(record)
+        flag = addPerson(record)
+        if(flag == -1):
+            print("Error")
+            return
         record[1:]=[0, 0]
         record[1] = input('License Number: ')
         record[2] = True;
@@ -89,7 +93,6 @@ def updateContact():
         print (">>>>>>>>>>>>>", e)
 
     return
-
 #4
 def addCab():
     try:
@@ -122,8 +125,6 @@ def removeCab():
         con.rollback()
         print("Failed to insert into database")
         print (">>>>>>>>>>>>>", e)
-
-
 #6
 def updateColorofCab():
     try:
@@ -143,7 +144,6 @@ def updateColorofCab():
         con.rollback()
         print("Failed to insert into database")
         print (">>>>>>>>>>>>>", e)
-
 #7
 def addCarModel():
     try:
@@ -164,7 +164,6 @@ def addCarModel():
         print (">>>>>>>>>>>>>", e)
         
     return
-
 #8
 def removeCarModel():
     try:
@@ -228,7 +227,7 @@ def assignShifttoDriver():
         query1 = "SELECT * FROM Driver_Shift WHERE SSN = '%s' "%(ssn)
         co = cur.execute(query1)
         if(co == 0):
-            query = "INSERT INTO DRIVER_SHIFT(Shift_Id,Driver_Shift) VALUES(%s,%s)" %(shift_Id,ssn)
+            query = "INSERT INTO DRIVER_SHIFT(Driver_SSN,Shift_Id) VALUES(%s,%s)" %(ssn,shift_Id)
             cur.execute(query)
             con.commit()
         else:
@@ -258,7 +257,161 @@ def removeDriverfromShift():
         con.rollback()
         print("Failed to insert into database removeDriverfromShift")
         print (">>>>>>>>>>>>>", e)      
+#13
+def assignShifttoCab():
+    try:
+        vrn = input('Enter the VRN of the Cab: ')
+        shift_Id = input('Enter the Shift you want the cab to be assigned to: ')
+        query1 = "SELECT * FROM Cab_Shift WHERE VRN = '%s' "%(vrn)
+        co = cur.execute(query1)
+        if(co == 0):
+            query = "INSERT INTO Cab_Shift(VRN,Shift_Id) VALUES(%s,%s)" %(vrn,shift_Id)
+            cur.execute(query)
+            con.commit()
+        else:
+            query = "UPDATE Cab_SHIFT SET Shift_Id = %s WHERE VRN = '%s' " %(shift_Id,vrn)
+            cur.execute(query)
+            con.commit()
+    
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database assignShifttoCab")
+        print (">>>>>>>>>>>>>", e)      
+#14
+def removeCabfromShift():
+    try:
+        vrn = input('Enter the SSN of the Cab: ')
+        shift_Id = input('Enter the Shift you want the cab to be removed from: ')
+        query1 = "SELECT Availability FROM Cab_Shift WHERE VRN = '%s' "%(vrn)
+        co = cur.execute(query1)
+        if(co == true):
+            query = "DELETE FROM Cab_SHIFT WHERE VRN = '%s' " %(vrn)
+            cur.execute(query)
+            con.commit()
+        else:
+            print("The cab is currently completing a ride. Please try again later.")
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeCabfromShift")
+        print (">>>>>>>>>>>>>", e)      
+#15
+def addRider():
+    try:
+        record = [0]*7  
+        print("Enter Rider details:")
+        record[0] = input('SSN: ')
+        record[1:3] = input('Name: ').split(' ')
+        dob = input('DOB: ').split('-')
+        record[3] = int(dob[0])
+        record[4] = int(dob[1])
+        record[5] = int(dob[2])
+        record[6] = int(input('Contact: '))
+        print(record)
+        flag = addPerson(record)
+        if(flag == -1):
+            print("Error")
+            return
+        query = "INSERT INTO Rider(SSN) VALUES(%s)" 
+        record = tuple(record)
+        print(record)
+        cur.execute(query, record)
+        con.commit()
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database add rider")
+        print (">>>>>>>>>>>>>", e)
         
+    return
+#16
+def addEmergencyContact():
+    try:
+        ssn = input("Enter the Rider's ssn whose emergency contact is to be entered")
+        query1 = "SELECT * From Emergency_Contact WHERE Rider_SSN = '%s' " %(ssn)
+        co = cur.execute(query1)
+        if(co == 0):
+            record = []
+            record[0] = input("Enter the Emergency Contact number")
+            record[1] = ssn
+            query = "INSERT INTO Emergency_Contact(Contact,Rider_SSN) VALUES(%s,%s)"
+            cur.execute(query,record)
+            con.commit()
+        else:
+            print("already exists")
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)         
+#17
+def requestARide():
+    try:
+        ssn = input("Enter your SSN: ")
+        now = datetime.now()
+        curtime = now.strftime("%H:%M")
+        query = "SELECT * FROM REQUEST"
+        request_id = cur.execute(query) + 1
+        query = "INSERT INTO Request(Request_id,Request_time,Rider_SSN) VALUES(%s,%s,%s)"
+        record = []
+        record[0] = request_id
+        record[1] = curtime
+        record[2] = ssn
+        cur.execute(query,record)
+        con.commit()
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)  
+#18
+def addAccidentDetails():
+    try:
+        ssn = input("Enter the Driver SSN who met with an accident: ")
+        query1 = "SELECT * FROM Driver WHERE SSN = '%s' "%(ssn)
+        co = cur.execute(query1)
+        if(co == 0):
+            print("Driver doesnt exist.")
+        else:
+            record = []
+            record[0] = time(input("Enter the time of the accident: "))
+            record[1] = ssn
+            record[2] = input("Enter the location of the accident: ")
+            query = "INSERT INTO ACCIDENT(Accident_time,Driver_ssn,location) VALUES(%s,%s,%s)"
+            cur.execute(query,record)
+            con.commit()
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)
+#19
+def changeStatus():
+#20
+def printDrivers():
+    try:
+        newcur = con.cursor()
+        query = "SELECT * from DRIVER"
+        newcur.execute(query)
+        print(newcur.fetchall())
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)
+#21
+def printCabs():
+    try:
+        newcur = con.cursor()
+        query = "SELECT * from CAB"
+        newcur.execute(query)
+        print(newcur.fetchall())
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)
+
 def dispatch(ch):
     """
     Function that maps helper functions to option entered
@@ -283,6 +436,40 @@ def dispatch(ch):
     elif(ch==9):
         addShift()
     elif(ch==10):
+        removeShift()
+    elif(ch==11):
+        assignShifttoDriver()
+    elif(ch==12):
+        removeDriverfromShift()
+    elif(ch==13):
+        assignShifttoCab()
+    elif(ch==14):
+        removeCabfromShift()
+    elif(ch==15):
+        addRider()
+    elif(ch==16):
+        addEmergencyContact()
+    elif(ch==17):
+        removeShift()
+    elif(ch==18):
+        addAccidentDetails()
+    elif(ch==19):
+        changeStatus()
+    elif(ch==20):
+        printDrivers()
+    elif(ch==21):
+        printCabs()
+    elif(ch==22):
+        removeShift()
+    elif(ch==23):
+        removeShift()
+    elif(ch==24):
+        removeShift()
+    elif(ch==25):
+        removeShift()
+    elif(ch==26):
+        removeShift()
+    elif(ch==27):
         removeShift()
     else:
         print("Error: Invalid Option")

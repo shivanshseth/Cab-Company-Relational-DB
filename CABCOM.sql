@@ -172,8 +172,8 @@ UNLOCK TABLES;
 
 DROP TABLE IF EXISTS `DRIVER_SHIFT`;
 CREATE TABLE `DRIVER_SHIFT` (
-  `Shift_id` varchar(15) NOT NULL,
   `Driver_SSN` varchar(15) NOT NULL,
+  `Shift_id` varchar(15) NOT NULL,
   
   PRIMARY KEY (`Driver_SSN`,`Shift_id`),
   FOREIGN Key (`Shift_id`) REFERENCES `SHIFT` (`Shift_id`) ON DELETE CASCADE,
