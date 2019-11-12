@@ -2,31 +2,7 @@ import subprocess as sp
 import pymysql
 import pymysql.cursors
 
-def fireAnEmployee():
-    """
-    Function to fire an employee
-    """
-    print("Not implemented")
-
-def promoteEmployee():
-    """
-    Function performs one of three jobs
-    1. Increases salary
-    2. Makes employee a supervisor
-    3. Makes employee a manager
-    """
-    print("Not implemented")
-
-
-def employeeStatistics():
-    """
-    Function prints a report containing 
-    the number of hours per week the employee works,
-    hourly pay, projects employee works on and so on
-    """
-    print("Not implemented")
-
-
+#1
 def addPerson(record):
     try:
         query = "INSERT INTO PERSON(SSN, First_name, Last_name, Year, Month, Day, Contact) VALUES(%s, %s, %s, %s, %s, %s, %s)" 
@@ -43,7 +19,7 @@ def addPerson(record):
         print (">>>>>>>>>>>>>", e)
         
     return
-
+#1
 def addDriver():
     try:
         record = [0]*7  
@@ -72,7 +48,7 @@ def addDriver():
         print (">>>>>>>>>>>>>", e)
         
     return
-
+#2
 def removePerson():
     try:
         ssn = input('SSN:')
@@ -92,6 +68,26 @@ def removePerson():
         print("Failed to insert into database remo")
         print (">>>>>>>>>>>>>", e)
         
+    return
+#3
+def updateContact():
+    try:
+        ssn = input('Enter the SSN of the Person hose contact is to be changed: ')
+        query1 = "SELECT * FROM PERSON WHERE SSN = '%s' " %(ssn)
+        co = cur.execute(query1)
+        if(co == 1):
+            newcon = input('Enter the new contact details: ')
+            query = "UPDATE PERSON SET Contact = %s WHERE SSN = '%s' "%(newcon,ssn)
+            cur.execute(query)
+            con.commit()
+        else:
+            print("Enter a Person whose details already exists")
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database")
+        print (">>>>>>>>>>>>>", e)
+
     return
 
 #4
@@ -149,7 +145,7 @@ def updateColorofCab():
         print (">>>>>>>>>>>>>", e)
 
 #7
-def addCabModel():
+def addCarModel():
     try:
         record = []
         print("Enter Cab Model details:")
@@ -186,7 +182,83 @@ def removeCarModel():
         con.rollback()
         print("Failed to insert into database")
         print (">>>>>>>>>>>>>", e)
+#9
+def addShift():
+    try:
+        print("Enter the details for adding a new shift: ")
+        st = []
+        et = []
+        st = input("Enter the start time: ").split(':')
+        et = input("Enter the end time: ").split(':')
+        flag = 0
+        query1 = "SELECT * FROM SHIFT WHERE SHIFT as S, S.Start_time < st AND S.End_time < et"
+        co = cur.execute(query1)
+        query1 = "SELECT * FROM SHIFT WHERE SHIFT as S, S.Start_time < et AND S.End_time > et"
+        co += cur.execute(query1)
+        if(co == 0):
+            query = "SELECT * FROM SHIFT"
+            co = cur.execute(query)
+            query = "INSERT INTO SHIFT(Shift_Id,Start_time,End_time) VALUES(%s,'%s:%s','%s:%s')"%(co+1,st[0],st[1],et[0],et[1])
+            cur.execute(query)
+            con.commit()
+        else:
+            print("The shift overlaps with other shifts. Please give a valid shift")
 
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database add shift")
+        print (">>>>>>>>>>>>>", e)
+#10
+def removeShift():
+    try:
+        shift_Id = int(input('Enter the Shift Id to be deleted from the database : '))
+        query = "DELETE FROM SHIFT WHERE Shift_Id = '%s'" %(shift_Id)
+        cur.execute(query)
+        con.commit()
+    
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database remove shift")
+        print (">>>>>>>>>>>>>", e)
+#11
+def assignShifttoDriver():
+    try:
+        ssn = input('Enter the SSN of the Cab Driver: ')
+        shift_Id = input('Enter the Shift you want the driver to be assigned to: ')
+        query1 = "SELECT * FROM Driver_Shift WHERE SSN = '%s' "%(ssn)
+        co = cur.execute(query1)
+        if(co == 0):
+            query = "INSERT INTO DRIVER_SHIFT(Shift_Id,Driver_Shift) VALUES(%s,%s)" %(shift_Id,ssn)
+            cur.execute(query)
+            con.commit()
+        else:
+            query = "UPDATE DRIVER_SHIFT SET Shift_Id = %s WHERE Driver_ssn = '%s' " %(shift_Id,ssn)
+            cur.execute(query)
+            con.commit()
+    
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database assignShifttoDriver")
+        print (">>>>>>>>>>>>>", e)      
+#12
+def removeDriverfromShift():
+    try:
+        ssn = input('Enter the SSN of the Cab Driver: ')
+        shift_Id = input('Enter the Shift you want the driver to be removed from: ')
+        query1 = "SELECT Availability FROM Driver_Shift WHERE SSN = '%s' "%(ssn)
+        co = cur.execute(query1)
+        if(co == true):
+            query = "DELETE FROM DRIVER_SHIFT WHERE Driver_ssn = '%s' " %(ssn)
+            cur.execute(query)
+            con.commit()
+        else:
+            print("The driver is currently completing a ride. Please try again later.")
+
+    except Exception as e:
+        con.rollback()
+        print("Failed to insert into database removeDriverfromShift")
+        print (">>>>>>>>>>>>>", e)      
+        
 def dispatch(ch):
     """
     Function that maps helper functions to option entered
@@ -197,9 +269,21 @@ def dispatch(ch):
     elif(ch==2):
         removePerson()
     elif(ch==3):
-        promoteEmployee()
+        updateContact()
     elif(ch==4):
-        employeeStatistics()
+        addCab()
+    elif(ch==5):
+        removeCab()
+    elif(ch==6):
+        updateColorofCab()
+    elif(ch==7):
+        addCarModel()
+    elif(ch==8):
+        removeCarModel()
+    elif(ch==9):
+        addShift()
+    elif(ch==10):
+        removeShift()
     else:
         print("Error: Invalid Option")
 
@@ -235,7 +319,7 @@ while(1):
                 print("6. Update color of a cab")
                 print("7. Add car model")
                 print("8. Remove car model")
-                print("9. Add shift")
+                print("9. Add shift")#mysql ke database main no overlap,handle with trigger
                 print("10. Remove shift")
                 print("11. Assign driver a shift")
                 print("12. Remove driver from a shift")
@@ -248,7 +332,12 @@ while(1):
                 print("19. Change ride status")
                 print("20. Print Drivers")
                 print("21. Print Cabs")
-                print("22. Logout")
+                print("22. Print All Drivers available at a given time")
+                print("23. Print All Cabs available at a given time")
+                print("24. Print All Requests available right now to be accepted by a driver")
+                print("25. Print All Accidents a Driver has been part of")
+                print("26. Print All Cabs of a certain type")
+                print("27. Logout")
                 ch = int(input("Enter choice> "))
                 tmp = sp.call('clear',shell=True)
                 if ch==20:
